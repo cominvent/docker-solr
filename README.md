@@ -135,7 +135,7 @@ The third way of creating a core at startup is to use the image extension mechan
 With Docker Compose you can create a Solr container with the index stored in a named data volume.
 Create a `docker-compose.yml` like:
 
-```
+```yml
 version: '2'
 services:
   solr:
