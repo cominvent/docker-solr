@@ -1,11 +1,11 @@
 # Supported tags and respective `Dockerfile` links
 
--       [`6.2.0`, `6.2`, `6`, `latest` (*6.2/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/92b9a6d8415979f5a7e6d6ad4dc7df8856604d12/6.2/Dockerfile)
--       [`6.1.0`, `6.1` (*6.1/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/43af88ba395a263785177ad04d75a5e8f0ec6401/6.1/Dockerfile)
--       [`6.0.0`, `6.0` (*6.0/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/43af88ba395a263785177ad04d75a5e8f0ec6401/6.0/Dockerfile)
--       [`5.5.3`, `5.5`, `5` (*5.5/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/e45bf96dba8ad5b5003e4cf409e3cd163af25cea/5.5/Dockerfile)
--       [`5.4.1`, `5.4` (*5.4/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/43af88ba395a263785177ad04d75a5e8f0ec6401/5.4/Dockerfile)
--       [`5.3.2`, `5.3` (*5.3/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/43af88ba395a263785177ad04d75a5e8f0ec6401/5.3/Dockerfile)
+-	[`6.2.0`, `6.2`, `6`, `latest` (*6.2/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/92b9a6d8415979f5a7e6d6ad4dc7df8856604d12/6.2/Dockerfile)
+-	[`6.1.0`, `6.1` (*6.1/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/43af88ba395a263785177ad04d75a5e8f0ec6401/6.1/Dockerfile)
+-	[`6.0.0`, `6.0` (*6.0/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/43af88ba395a263785177ad04d75a5e8f0ec6401/6.0/Dockerfile)
+-	[`5.5.3`, `5.5`, `5` (*5.5/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/e45bf96dba8ad5b5003e4cf409e3cd163af25cea/5.5/Dockerfile)
+-	[`5.4.1`, `5.4` (*5.4/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/43af88ba395a263785177ad04d75a5e8f0ec6401/5.4/Dockerfile)
+-	[`5.3.2`, `5.3` (*5.3/Dockerfile*)](https://github.com/docker-solr/docker-solr/blob/43af88ba395a263785177ad04d75a5e8f0ec6401/5.3/Dockerfile)
 
 For each of these there are variants based on the Alpine image, .e.g `6.0-alpine`.
 
@@ -90,11 +90,11 @@ $ docker run -d -P solr solr-create -c mycore
 
 the container will:
 
-- run Solr in the background, on the loopback interface
-- wait for it to start
-- run the "solr create" command with the arguments you passed
-- stop the background Solr
-- start Solr in the foreground
+-	run Solr in the background, on the loopback interface
+-	wait for it to start
+-	run the "solr create" command with the arguments you passed
+-	stop the background Solr
+-	start Solr in the foreground
 
 You can combine this with mounted volumes to pass in core configuration from your host:
 
@@ -102,22 +102,18 @@ You can combine this with mounted volumes to pass in core configuration from you
 $ docker run -d -P -v $PWD/myconfig:/myconfig solr solr-create -c mycore -d /myconfig
 ```
 
-When using the `solr-create` command, Solr will log to the standard docker log (inspect with `docker logs`),
-and the collection creation will happen in the background and log to `/opt/docker-solr/init.log`.
+When using the `solr-create` command, Solr will log to the standard docker log (inspect with `docker logs`), and the collection creation will happen in the background and log to `/opt/docker-solr/init.log`.
 
-This first way closely mirrors the manual core creation steps and uses Solr's own tools to create the core,
-so should be reliable.
+This first way closely mirrors the manual core creation steps and uses Solr's own tools to create the core, so should be reliable.
 
-The second way of creating a core at start time is using the `solr-precreate` command. This will create the core
-in the filesystem before running Solr. You should pass it the core name, and optionally the directory to copy the
-config from (this defaults to Solr's built-in "basic_configs"). For example:
+The second way of creating a core at start time is using the `solr-precreate` command. This will create the core in the filesystem before running Solr. You should pass it the core name, and optionally the directory to copy the config from (this defaults to Solr's built-in "basic_configs"). For example:
 
 ```console
 $ docker run -d -P solr solr-precreate mycore
 $ docker run -d -P -v $PWD/myconfig:/myconfig solr solr-precreate mycore /myconfig
 ```
-This method stores the core in an intermediate subdirectory called "mycores". This allows you to use mounted
-volumes:
+
+This method stores the core in an intermediate subdirectory called "mycores". This allows you to use mounted volumes:
 
 ```console
 $ mkdir mycores
@@ -125,15 +121,13 @@ $ sudo chown 8983:8983 mycores
 $ docker run -d -P -v $PWD/mycores:/opt/solr/server/solr/mycores solr solr-precreate mycore
 ```
 
-This second way is quicker, easier to monitor because it logs to the docker log, and can fail immediately if something is wrong.
-But, because it makes assumptions about Solr's "basic_configs", future upstream changes could break that.
+This second way is quicker, easier to monitor because it logs to the docker log, and can fail immediately if something is wrong. But, because it makes assumptions about Solr's "basic_configs", future upstream changes could break that.
 
 The third way of creating a core at startup is to use the image extension mechanism explained in the next section.
 
 ## Using Docker Compose
 
-With Docker Compose you can create a Solr container with the index stored in a named data volume.
-Create a `docker-compose.yml` like:
+With Docker Compose you can create a Solr container with the index stored in a named data volume. Create a `docker-compose.yml` like:
 
 ```yml
 version: '2'
@@ -156,10 +150,7 @@ and just run `docker-compose up`.
 
 ## Extending the image
 
-The docker-solr image has an extension mechanism. At run time, before starting Solr, the container will execute scripts
-in the `/docker-entrypoint-initdb.d/` directory. You can add your own scripts there either by using mounted volumes
-or by using a custom Dockerfile. These scripts can for example copy a core directory with pre-loaded data for continuous
-integration testing, or modify the Solr configuration.
+The docker-solr image has an extension mechanism. At run time, before starting Solr, the container will execute scripts in the `/docker-entrypoint-initdb.d/` directory. You can add your own scripts there either by using mounted volumes or by using a custom Dockerfile. These scripts can for example copy a core directory with pre-loaded data for continuous integration testing, or modify the Solr configuration.
 
 Here is a simple example. With a `set-heap.sh` script like:
 
@@ -184,16 +175,13 @@ SOLR_HEAP="1024m"
 Starting Solr on port 8983 from /opt/solr/server
 ```
 
-With this extension mechanism it can be useful to see the shell commands that are being executed by the `docker-entrypoint.sh`
-script in the docker log. To do that, set an environment variable using Docker's `-e VERBOSE=yes`.
+With this extension mechanism it can be useful to see the shell commands that are being executed by the `docker-entrypoint.sh` script in the docker log. To do that, set an environment variable using Docker's `-e VERBOSE=yes`.
 
 ## Distributed Solr
 
 You can also run a distributed Solr configuration.
 
-The recommended and most flexible way to do that is to use Docker networking.
-See the [Can I run ZooKeeper and Solr clusters under Docker](https://github.com/docker-solr/docker-solr/blob/master/Docker-FAQ.md#can-i-run-zookeeper-and-solr-clusters-under-docker) FAQ,
-and [this example](docs/docker-networking.md).
+The recommended and most flexible way to do that is to use Docker networking. See the [Can I run ZooKeeper and Solr clusters under Docker](https://github.com/docker-solr/docker-solr/blob/master/Docker-FAQ.md#can-i-run-zookeeper-and-solr-clusters-under-docker) FAQ, and [this example](docs/docker-networking.md).
 
 You can also use legacy links, see the [Can I run ZooKeeper and Solr with Docker Links](Docker-FAQ.md#can-i-run-zookeeper-and-solr-clusters-under-docker) FAQ.
 
